@@ -1,0 +1,1 @@
+/usr/bin/cc -g  -rdynamic CMakeFiles/cJson_test.dir/test.c.o  -o cJson_test libcJson.a 
