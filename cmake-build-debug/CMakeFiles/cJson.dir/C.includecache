@@ -11,6 +11,10 @@ assert.h
 -
 stdlib.h
 -
+errno.h
+-
+math.h
+-
 cJson.h
 /home/heyjude/workspace/projects/cJson/cJson.h
 

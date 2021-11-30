@@ -9,9 +9,13 @@
 
 #include <assert.h>
 #include <stdlib.h> // NULL
+#include <errno.h>  // errno
+#include <math.h> // HUGE_VAL
 #include "cJson.h"
 
 #define EXPECT(c, ch) do{ assert(*c->json == (ch)); c->json++;} while(0)
+#define ISDIGIT(ch) ((ch >= '0' && (ch) <= '9'))
+#define ISDIGIT1TO9(ch) ((ch >= '1' && (ch) <= '9'))
 
 typedef struct {
     const char *json;
@@ -52,6 +56,39 @@ static int json_parse_true(json_context *c, json_value *v) {
     return JSON_PARSE_OK;
 }
 
+// 解析数字
+static int json_parse_number(json_context *c, json_value *v) {
+    const char *p = c->json;
+    if (*p == '-')
+        p++;
+    if (*p == '0')
+        p++;
+    else {
+        if (!ISDIGIT1TO9(*p)) return JSON_PARSE_INVALID_VALUE;
+        for (p++; ISDIGIT(*p); p++);
+    }
+    if (*p == '.') {
+        p++;
+        if (!ISDIGIT(*p)) return JSON_PARSE_INVALID_VALUE;
+        for (p++; ISDIGIT(*p); p++);
+    }
+    if (*p == 'e' || *p == 'E') {
+        p++;
+        if (*p == '+' || *p == '-') {
+            p++;
+        }
+        if (!ISDIGIT(*p)) return JSON_PARSE_INVALID_VALUE;
+        for (p++; ISDIGIT(*p); p++);
+    }
+    errno = 0;
+    v->n = strtod(c->json, NULL);
+    if (errno == ERANGE && (v->n == HUGE_VAL || v->n == -HUGE_VAL))
+        return JSON_PARSE_NUMBER_TOO_BIG;
+    c->json = p;
+    v->type = JSON_NUMBER;
+    return JSON_PARSE_OK;
+}
+
 // 解析json字符串 主函数
 int json_parse(json_value *v, const char *json) {
     json_context c;
@@ -63,6 +100,7 @@ int json_parse(json_value *v, const char *json) {
     if ((ret = json_parse_value(&c, v)) == JSON_PARSE_OK) {
         json_parse_whitespace(&c);
         if (*c.json != '\0') {
+            v->type = JSON_NULL;
             ret = JSON_PARSE_ROOT_NOT_SINGULAR;
         }
     }
@@ -80,7 +118,7 @@ int json_parse_value(json_context *c, json_value *v) {
         case '\0':
             return JSON_PARSE_EXPECT_VALUE;
         default:
-            return JSON_PARSE_INVALID_VALUE;
+            return json_parse_number(c, v);
     }
 }
 
@@ -96,4 +134,10 @@ void json_parse_whitespace(json_context *c) {
 json_type json_get_type(const json_value *v) {
     assert(v != NULL);
     return v->type;
+}
+
+// 获取数字
+double json_get_number(const json_value *v) {
+    assert(v != NULL && v->type == JSON_NUMBER);
+    return v->n;
 }
