@@ -15,6 +15,8 @@ errno.h
 -
 math.h
 -
+string.h
+-
 cJson.h
 /home/heyjude/workspace/projects/cJson/cJson.h
 
