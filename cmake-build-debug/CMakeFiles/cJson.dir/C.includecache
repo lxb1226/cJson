@@ -9,6 +9,8 @@
 /home/heyjude/workspace/projects/cJson/cJson.c
 assert.h
 -
+stdio.h
+-
 stdlib.h
 -
 errno.h

@@ -22,17 +22,33 @@ typedef enum {
     JSON_OBJECT
 } json_type;
 
-typedef struct {
+typedef struct json_value json_value;
+typedef struct json_member json_member;
+
+struct json_value {
     json_type type;
     union {
         struct {
             char *s;
             size_t len;
         } s; // string
+        struct {
+            json_value *e;
+            size_t size;
+        } a; // array
+        struct {
+            json_member *m;
+            size_t size;
+        } o; // object
         double n;   // double
     } u;
+};
 
-} json_value;
+struct json_member {
+    char *k;
+    size_t klen;
+    json_value v;
+};
 
 enum {
     JSON_PARSE_OK = 0,
@@ -42,7 +58,15 @@ enum {
     JSON_PARSE_NUMBER_TOO_BIG,
     JSON_PARSE_MISS_QUOTATION_MARK,
     JSON_PARSE_INVALID_STRING_ESCAPE,
-    JSON_PARSE_INVALID_STRING_CHAR
+    JSON_PARSE_INVALID_STRING_CHAR,
+    JSON_PARSE_INVALID_UNICODE_HEX,
+    JSON_PARSE_INVALID_UNICODE_SURROGATE,
+    JSON_PARSE_MISS_COMMA_OR_SQUARE_BARCKET,
+    JSON_PARSE_MISS_KEY,
+    JSON_PARSE_MISS_COLON,
+    JSON_PARSE_MISS_COMMA_OR_CURLY_BARCKET,
+
+    JSON_STRINGIFY_OK
 };
 
 #define json_init(v) do{ (v)->type = JSON_NULL; }while(0)
@@ -50,6 +74,8 @@ enum {
 
 // 解析json字符串
 int json_parse(json_value *v, const char *json);
+
+int json_stringify(const json_value *v, char **json, size_t *length);
 
 // 访问json类型
 json_type json_get_type(const json_value *v);
@@ -71,6 +97,18 @@ const char *json_get_string(const json_value *v);
 size_t json_get_string_length(const json_value *v);
 
 void json_set_string(json_value *v, const char *s, size_t len);
+
+size_t json_get_array_size(const json_value *v);
+
+json_value *json_get_array_element(const json_value *v, size_t index);
+
+size_t json_get_object_size(const json_value *v);
+
+const char *json_get_object_key(const json_value *v, size_t index);
+
+size_t json_get_object_key_length(const json_value *v, size_t index);
+
+json_value *json_get_object_value(const json_value *v, size_t index);
 
 #endif //CJSON_CJSON_H
 
