@@ -67,9 +67,11 @@ static void test_parse_false() {
 #define TEST_ERROR(error, json) \
     do{\
         json_value v;           \
+        json_init(&v); \
         v.type = JSON_FALSE;    \
         EXPECT_EQ_INT(error, json_parse(&v, json)); \
-        EXPECT_EQ_INT(JSON_NULL, json_get_type(&v));                    \
+        EXPECT_EQ_INT(JSON_NULL, json_get_type(&v));     \
+        json_free(&v);                \
     }while(0)
 
 static void test_parse_expect_value() {
@@ -183,6 +185,7 @@ static void test_parse_string() {
     TEST_STRING("Hello\0World", "\"Hello\\u0000World\"");
     TEST_STRING("\x24", "\"\\u0024\"");         /* Dollar sign U+0024 */
     TEST_STRING("\xC2\xA2", "\"\\u00A2\"");     /* Cents sign U+00A2 */
+    TEST_STRING("\xE2\x82\xAC", "\"\\u20AC\""); /* Euro sign U+20AC */
     TEST_STRING("\xE2\x82\xAC", "\"\\u20AC\""); /* Euro sign U+20AC */
     TEST_STRING("\xF0\x9D\x84\x9E", "\"\\uD834\\uDD1E\"");  /* G clef sign U+1D11E */
     TEST_STRING("\xF0\x9D\x84\x9E", "\"\\ud834\\udd1e\"");  /* G clef sign U+1D11E */

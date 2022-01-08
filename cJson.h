@@ -1,18 +1,19 @@
 
 /**
-*  @DATE: 2021/11/30 10:00
-*  @author: heyjude
-*  @email: 1944303766@qq.com
-*/
+ *  @DATE: 2021/11/30 10:00
+ *  @author: heyjude
+ *  @email: 1944303766@qq.com
+ */
 //
 // Created by heyjude on 2021/11/30.
 //
 
-#ifndef CJSON_CJSON_H
-#define CJSON_CJSON_H
+#ifndef CJSON_H
+#define CJSON_H
 
 // json类型
-typedef enum {
+typedef enum
+{
     JSON_NULL,
     JSON_FALSE,
     JSON_TRUE,
@@ -25,32 +26,39 @@ typedef enum {
 typedef struct json_value json_value;
 typedef struct json_member json_member;
 
-struct json_value {
+struct json_value
+{
     json_type type;
-    union {
-        struct {
+    union
+    {
+        struct
+        {
             char *s;
             size_t len;
         } s; // string
-        struct {
+        struct
+        {
             json_value *e;
             size_t size;
         } a; // array
-        struct {
+        struct
+        {
             json_member *m;
             size_t size;
-        } o; // object
-        double n;   // double
+        } o;      // object
+        double n; // double
     } u;
 };
 
-struct json_member {
+struct json_member
+{
     char *k;
     size_t klen;
     json_value v;
 };
 
-enum {
+enum
+{
     JSON_PARSE_OK = 0,
     JSON_PARSE_EXPECT_VALUE,
     JSON_PARSE_INVALID_VALUE,
@@ -65,17 +73,21 @@ enum {
     JSON_PARSE_MISS_KEY,
     JSON_PARSE_MISS_COLON,
     JSON_PARSE_MISS_COMMA_OR_CURLY_BARCKET,
-
     JSON_STRINGIFY_OK
 };
 
-#define json_init(v) do{ (v)->type = JSON_NULL; }while(0)
+#define json_init(v)           \
+    do                         \
+    {                          \
+        (v)->type = JSON_NULL; \
+    } while (0)
 #define json_set_null(v) json_free(v)
 
 // 解析json字符串
 int json_parse(json_value *v, const char *json);
 
-int json_stringify(const json_value *v, char **json, size_t *length);
+// 格式化json为字符串
+char* json_stringify(const json_value *v, size_t *length);
 
 // 访问json类型
 json_type json_get_type(const json_value *v);
@@ -110,6 +122,4 @@ size_t json_get_object_key_length(const json_value *v, size_t index);
 
 json_value *json_get_object_value(const json_value *v, size_t index);
 
-#endif //CJSON_CJSON_H
-
-
+#endif // CJSON_H

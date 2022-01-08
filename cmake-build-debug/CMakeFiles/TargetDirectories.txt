@@ -1,4 +1,0 @@
-/home/heyjude/workspace/projects/cJson/cmake-build-debug/CMakeFiles/rebuild_cache.dir
-/home/heyjude/workspace/projects/cJson/cmake-build-debug/CMakeFiles/edit_cache.dir
-/home/heyjude/workspace/projects/cJson/cmake-build-debug/CMakeFiles/cJson.dir
-/home/heyjude/workspace/projects/cJson/cmake-build-debug/CMakeFiles/cJson_test.dir
