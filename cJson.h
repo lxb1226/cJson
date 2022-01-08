@@ -59,21 +59,21 @@ struct json_member
 
 enum
 {
-    JSON_PARSE_OK = 0,
-    JSON_PARSE_EXPECT_VALUE,
-    JSON_PARSE_INVALID_VALUE,
-    JSON_PARSE_ROOT_NOT_SINGULAR,
-    JSON_PARSE_NUMBER_TOO_BIG,
-    JSON_PARSE_MISS_QUOTATION_MARK,
-    JSON_PARSE_INVALID_STRING_ESCAPE,
-    JSON_PARSE_INVALID_STRING_CHAR,
-    JSON_PARSE_INVALID_UNICODE_HEX,
-    JSON_PARSE_INVALID_UNICODE_SURROGATE,
-    JSON_PARSE_MISS_COMMA_OR_SQUARE_BARCKET,
-    JSON_PARSE_MISS_KEY,
-    JSON_PARSE_MISS_COLON,
-    JSON_PARSE_MISS_COMMA_OR_CURLY_BARCKET,
-    JSON_STRINGIFY_OK
+    JSON_PARSE_OK = 0, // 解析成功
+    JSON_PARSE_EXPECT_VALUE,    // 期待值
+    JSON_PARSE_INVALID_VALUE,   // 无效的值
+    JSON_PARSE_ROOT_NOT_SINGULAR,   
+    JSON_PARSE_NUMBER_TOO_BIG,  // 数值太大
+    JSON_PARSE_MISS_QUOTATION_MARK, // 缺少"
+    JSON_PARSE_INVALID_STRING_ESCAPE, // 无效的转义字符
+    JSON_PARSE_INVALID_STRING_CHAR, // 无效的字符
+    JSON_PARSE_INVALID_UNICODE_HEX, // 无效的16进制
+    JSON_PARSE_INVALID_UNICODE_SURROGATE,   // 无效的代理对
+    JSON_PARSE_MISS_COMMA_OR_SQUARE_BARCKET,    // 缺少,或者]
+    JSON_PARSE_MISS_KEY,    // 缺少键key
+    JSON_PARSE_MISS_COLON,  // 缺少:
+    JSON_PARSE_MISS_COMMA_OR_CURLY_BARCKET, // 缺少,或者}
+    JSON_STRINGIFY_OK   // 字符串化成功
 };
 
 #define json_init(v)           \
@@ -92,6 +92,7 @@ char* json_stringify(const json_value *v, size_t *length);
 // 访问json类型
 json_type json_get_type(const json_value *v);
 
+// 释放json_value
 void json_free(json_value *v);
 
 double json_get_number(const json_value *v);

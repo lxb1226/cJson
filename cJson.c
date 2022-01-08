@@ -72,7 +72,13 @@ static void *json_context_pop(json_context *c, size_t size)
 }
 
 // 解析空格
-static void json_parse_whitespace(json_context *c);
+static void json_parse_whitespace(json_context *c)
+{
+    const char *p = c->json;
+    while (*p == ' ' || *p == '\n' || *p == '\r' || *p == '\t')
+        p++;
+    c->json = p;
+}
 
 // 解析值
 static int json_parse_value(json_context *c, json_value *v);
@@ -160,6 +166,24 @@ void json_encode_utf8(json_context *c, unsigned u)
     }
 }
 
+// 解析字面量 null true false
+static int json_parse_literal(json_context *c, json_value *v, const char *literal, json_type type)
+{
+    size_t i;
+    EXPECT(c, literal[0]);
+    for (i = 0; literal[i + 1]; i++)
+    {
+        if (c->json[i] != literal[i + 1])
+        {
+            return JSON_PARSE_INVALID_VALUE;
+        }
+    }
+    c->json += i;
+    v->type = type;
+    return JSON_PARSE_OK;
+}
+
+// 解析原始字符串
 static int json_parse_string_raw(json_context *c, char **str, size_t *len)
 {
     size_t head = c->top;
@@ -177,9 +201,7 @@ static int json_parse_string_raw(json_context *c, char **str, size_t *len)
             *str = json_context_pop(c, *len);
             c->json = p;
             return JSON_PARSE_OK;
-        case '\0':
-            STRING_ERROR(JSON_PARSE_MISS_QUOTATION_MARK);
-        case '\\':
+        case '\\': // 解析转义字符
             switch (*p++)
             {
             case '\"':
@@ -206,7 +228,7 @@ static int json_parse_string_raw(json_context *c, char **str, size_t *len)
             case 't':
                 PUTC(c, '\t');
                 break;
-            case 'u':
+            case 'u': // 解析
                 if (!(p = json_parse_hex4(p, &u)))
                     STRING_ERROR(JSON_PARSE_INVALID_UNICODE_HEX);
                 if (u >= 0xD800 && u <= 0xDBFF)
@@ -230,6 +252,8 @@ static int json_parse_string_raw(json_context *c, char **str, size_t *len)
                 STRING_ERROR(JSON_PARSE_INVALID_STRING_ESCAPE);
             }
             break;
+        case '\0':
+            STRING_ERROR(JSON_PARSE_MISS_QUOTATION_MARK);
         default:
             if ((unsigned char)ch < 0x20)
             {
@@ -427,6 +451,29 @@ static int json_parse_object(json_context *c, json_value *v)
     return ret;
 }
 
+static int json_parse_value(json_context *c, json_value *v)
+{
+    switch (*c->json)
+    {
+    case 'n':
+        return json_parse_literal(c, v, "null", JSON_NULL);
+    case 'f':
+        return json_parse_literal(c, v, "false", JSON_FALSE);
+    case 't':
+        return json_parse_literal(c, v, "true", JSON_TRUE);
+    case '\0':
+        return JSON_PARSE_EXPECT_VALUE;
+    case '"':
+        return json_parse_string(c, v);
+    case '[':
+        return json_parse_array(c, v);
+    case '{':
+        return json_parse_object(c, v);
+    default:
+        return json_parse_number(c, v);
+    }
+}
+
 // 解析json字符串 主函数
 int json_parse(json_value *v, const char *json)
 {
@@ -450,46 +497,6 @@ int json_parse(json_value *v, const char *json)
     assert(c.top == 0);
     free(c.stack);
     return ret;
-}
-
-// 解析字面量 null true false
-static int json_parse_literal(json_context *c, json_value *v, const char *literal, json_type type)
-{
-    size_t i;
-    EXPECT(c, literal[0]);
-    for (i = 0; literal[i + 1]; i++)
-    {
-        if (c->json[i] != literal[i + 1])
-        {
-            return JSON_PARSE_INVALID_VALUE;
-        }
-    }
-    c->json += i;
-    v->type = type;
-    return JSON_PARSE_OK;
-}
-
-static int json_parse_value(json_context *c, json_value *v)
-{
-    switch (*c->json)
-    {
-    case 'n':
-        return json_parse_literal(c, v, "null", JSON_NULL);
-    case 'f':
-        return json_parse_literal(c, v, "false", JSON_FALSE);
-    case 't':
-        return json_parse_literal(c, v, "true", JSON_TRUE);
-    case '\0':
-        return JSON_PARSE_EXPECT_VALUE;
-    case '"':
-        return json_parse_string(c, v);
-    case '[':
-        return json_parse_array(c, v);
-    case '{':
-        return json_parse_object(c, v);
-    default:
-        return json_parse_number(c, v);
-    }
 }
 
 #define PUTS(c, s, len) memcpy(json_context_push(c, len), s, len)
@@ -539,7 +546,6 @@ static void json_stringify_string(json_context *c, const char *s, size_t len)
     PUTC(c, '"');
 }
 
-// 格式化输出json
 static void json_stringify_value(json_context *c, const json_value *v)
 {
     size_t i;
@@ -598,12 +604,13 @@ static void json_stringify_value(json_context *c, const json_value *v)
     
 }
 
+// 字符串化json 主函数
 char* json_stringify(const json_value *v,  size_t *length)
 {
     json_context c;
     assert(v != NULL);
 
-    c.stack = (char *)malloc(c.size == JSON_PARSE_STACK_INIT_SIZE);
+    c.stack = (char *)malloc(c.size = JSON_PARSE_STACK_INIT_SIZE);
     c.top = 0;
     json_stringify_value(&c, v);
     if (length)
@@ -613,15 +620,6 @@ char* json_stringify(const json_value *v,  size_t *length)
     PUTC(&c, '\0');
     
     return c.stack;
-}
-
-// 解析空格
-void json_parse_whitespace(json_context *c)
-{
-    const char *p = c->json;
-    while (*p == ' ' || *p == '\n' || *p == '\r' || *p == '\t')
-        p++;
-    c->json = p;
 }
 
 // 获取json类型
