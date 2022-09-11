@@ -1,0 +1,1 @@
+/usr/bin/c++  -g  -rdynamic CMakeFiles/cjson_unittest.dir/cjson_unittest.cpp.o CMakeFiles/cjson_unittest.dir/__/src/cJson.cpp.o  -o cjson_unittest  /usr/local/lib/libgmock.a /usr/local/lib/libgmock.a /usr/local/lib/libgtest.a /usr/local/lib/libgtest_main.a -lpthread 

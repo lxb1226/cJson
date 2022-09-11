@@ -53,75 +53,64 @@ CMAKE_BINARY_DIR = /home/heyjude/workspace/projects/cJson/build
 # Directory level rules for the build root directory
 
 # The main recursive "all" target.
-all: CMakeFiles/cJson_test.dir/all
-all: CMakeFiles/cJson.dir/all
+all: tests/all
 
 .PHONY : all
 
 # The main recursive "preinstall" target.
-preinstall:
+preinstall: tests/preinstall
 
 .PHONY : preinstall
 
 # The main recursive "clean" target.
-clean: CMakeFiles/cJson_test.dir/clean
-clean: CMakeFiles/cJson.dir/clean
+clean: tests/clean
 
 .PHONY : clean
 
 #=============================================================================
-# Target rules for target CMakeFiles/cJson_test.dir
+# Directory level rules for directory tests
 
-# All Build rule for target.
-CMakeFiles/cJson_test.dir/all: CMakeFiles/cJson.dir/all
-	$(MAKE) -f CMakeFiles/cJson_test.dir/build.make CMakeFiles/cJson_test.dir/depend
-	$(MAKE) -f CMakeFiles/cJson_test.dir/build.make CMakeFiles/cJson_test.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/heyjude/workspace/projects/cJson/build/CMakeFiles --progress-num=3,4 "Built target cJson_test"
-.PHONY : CMakeFiles/cJson_test.dir/all
+# Recursive "all" directory target.
+tests/all: tests/CMakeFiles/cjson_unittest.dir/all
 
-# Build rule for subdir invocation for target.
-CMakeFiles/cJson_test.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/heyjude/workspace/projects/cJson/build/CMakeFiles 4
-	$(MAKE) -f CMakeFiles/Makefile2 CMakeFiles/cJson_test.dir/all
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/heyjude/workspace/projects/cJson/build/CMakeFiles 0
-.PHONY : CMakeFiles/cJson_test.dir/rule
+.PHONY : tests/all
 
-# Convenience name for target.
-cJson_test: CMakeFiles/cJson_test.dir/rule
+# Recursive "preinstall" directory target.
+tests/preinstall:
 
-.PHONY : cJson_test
+.PHONY : tests/preinstall
 
-# clean rule for target.
-CMakeFiles/cJson_test.dir/clean:
-	$(MAKE) -f CMakeFiles/cJson_test.dir/build.make CMakeFiles/cJson_test.dir/clean
-.PHONY : CMakeFiles/cJson_test.dir/clean
+# Recursive "clean" directory target.
+tests/clean: tests/CMakeFiles/cjson_unittest.dir/clean
+
+.PHONY : tests/clean
 
 #=============================================================================
-# Target rules for target CMakeFiles/cJson.dir
+# Target rules for target tests/CMakeFiles/cjson_unittest.dir
 
 # All Build rule for target.
-CMakeFiles/cJson.dir/all:
-	$(MAKE) -f CMakeFiles/cJson.dir/build.make CMakeFiles/cJson.dir/depend
-	$(MAKE) -f CMakeFiles/cJson.dir/build.make CMakeFiles/cJson.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/heyjude/workspace/projects/cJson/build/CMakeFiles --progress-num=1,2 "Built target cJson"
-.PHONY : CMakeFiles/cJson.dir/all
+tests/CMakeFiles/cjson_unittest.dir/all:
+	$(MAKE) -f tests/CMakeFiles/cjson_unittest.dir/build.make tests/CMakeFiles/cjson_unittest.dir/depend
+	$(MAKE) -f tests/CMakeFiles/cjson_unittest.dir/build.make tests/CMakeFiles/cjson_unittest.dir/build
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/heyjude/workspace/projects/cJson/build/CMakeFiles --progress-num=1,2,3 "Built target cjson_unittest"
+.PHONY : tests/CMakeFiles/cjson_unittest.dir/all
 
 # Build rule for subdir invocation for target.
-CMakeFiles/cJson.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/heyjude/workspace/projects/cJson/build/CMakeFiles 2
-	$(MAKE) -f CMakeFiles/Makefile2 CMakeFiles/cJson.dir/all
+tests/CMakeFiles/cjson_unittest.dir/rule: cmake_check_build_system
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/heyjude/workspace/projects/cJson/build/CMakeFiles 3
+	$(MAKE) -f CMakeFiles/Makefile2 tests/CMakeFiles/cjson_unittest.dir/all
 	$(CMAKE_COMMAND) -E cmake_progress_start /home/heyjude/workspace/projects/cJson/build/CMakeFiles 0
-.PHONY : CMakeFiles/cJson.dir/rule
+.PHONY : tests/CMakeFiles/cjson_unittest.dir/rule
 
 # Convenience name for target.
-cJson: CMakeFiles/cJson.dir/rule
+cjson_unittest: tests/CMakeFiles/cjson_unittest.dir/rule
 
-.PHONY : cJson
+.PHONY : cjson_unittest
 
 # clean rule for target.
-CMakeFiles/cJson.dir/clean:
-	$(MAKE) -f CMakeFiles/cJson.dir/build.make CMakeFiles/cJson.dir/clean
-.PHONY : CMakeFiles/cJson.dir/clean
+tests/CMakeFiles/cjson_unittest.dir/clean:
+	$(MAKE) -f tests/CMakeFiles/cjson_unittest.dir/build.make tests/CMakeFiles/cjson_unittest.dir/clean
+.PHONY : tests/CMakeFiles/cjson_unittest.dir/clean
 
 #=============================================================================
 # Special targets to cleanup operation of make.

@@ -135,6 +135,13 @@ static void test_parse_invalid_string_char() {
     }while(0)
 
 static void test_parse_number() {
+    // 区分类别 整数 小数 正数 负数 科学计数法 最小的1 minimum denormal Max subnormal double Min normal positive double Max double
+    // 整数 ： 正整数 负整数 0
+    // 小数 ： 正小数 负小数
+    // 科学计数法 :
+
+    // 最值:
+
     TEST_NUMBER(0.0, "0");
     TEST_NUMBER(0.0, "-0");
     TEST_NUMBER(0.0, "-0.0");

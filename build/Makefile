@@ -56,17 +56,6 @@ CMAKE_BINARY_DIR = /home/heyjude/workspace/projects/cJson/build
 #=============================================================================
 # Targets provided globally by CMake.
 
-# Special rule for the target edit_cache
-edit_cache:
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "No interactive CMake dialog available..."
-	/usr/bin/cmake -E echo No\ interactive\ CMake\ dialog\ available.
-.PHONY : edit_cache
-
-# Special rule for the target edit_cache
-edit_cache/fast: edit_cache
-
-.PHONY : edit_cache/fast
-
 # Special rule for the target rebuild_cache
 rebuild_cache:
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Running CMake to regenerate build system..."
@@ -77,6 +66,28 @@ rebuild_cache:
 rebuild_cache/fast: rebuild_cache
 
 .PHONY : rebuild_cache/fast
+
+# Special rule for the target edit_cache
+edit_cache:
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Running CMake cache editor..."
+	/usr/bin/cmake-gui -S$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR)
+.PHONY : edit_cache
+
+# Special rule for the target edit_cache
+edit_cache/fast: edit_cache
+
+.PHONY : edit_cache/fast
+
+# Special rule for the target test
+test:
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Running tests..."
+	/usr/bin/ctest --force-new-ctest-process $(ARGS)
+.PHONY : test
+
+# Special rule for the target test
+test/fast: test
+
+.PHONY : test/fast
 
 # The main all target
 all: cmake_check_build_system
@@ -111,84 +122,17 @@ depend:
 .PHONY : depend
 
 #=============================================================================
-# Target rules for targets named cJson_test
+# Target rules for targets named cjson_unittest
 
 # Build rule for target.
-cJson_test: cmake_check_build_system
-	$(MAKE) -f CMakeFiles/Makefile2 cJson_test
-.PHONY : cJson_test
+cjson_unittest: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 cjson_unittest
+.PHONY : cjson_unittest
 
 # fast build rule for target.
-cJson_test/fast:
-	$(MAKE) -f CMakeFiles/cJson_test.dir/build.make CMakeFiles/cJson_test.dir/build
-.PHONY : cJson_test/fast
-
-#=============================================================================
-# Target rules for targets named cJson
-
-# Build rule for target.
-cJson: cmake_check_build_system
-	$(MAKE) -f CMakeFiles/Makefile2 cJson
-.PHONY : cJson
-
-# fast build rule for target.
-cJson/fast:
-	$(MAKE) -f CMakeFiles/cJson.dir/build.make CMakeFiles/cJson.dir/build
-.PHONY : cJson/fast
-
-cJson.o: cJson.c.o
-
-.PHONY : cJson.o
-
-# target to build an object file
-cJson.c.o:
-	$(MAKE) -f CMakeFiles/cJson.dir/build.make CMakeFiles/cJson.dir/cJson.c.o
-.PHONY : cJson.c.o
-
-cJson.i: cJson.c.i
-
-.PHONY : cJson.i
-
-# target to preprocess a source file
-cJson.c.i:
-	$(MAKE) -f CMakeFiles/cJson.dir/build.make CMakeFiles/cJson.dir/cJson.c.i
-.PHONY : cJson.c.i
-
-cJson.s: cJson.c.s
-
-.PHONY : cJson.s
-
-# target to generate assembly for a file
-cJson.c.s:
-	$(MAKE) -f CMakeFiles/cJson.dir/build.make CMakeFiles/cJson.dir/cJson.c.s
-.PHONY : cJson.c.s
-
-test.o: test.c.o
-
-.PHONY : test.o
-
-# target to build an object file
-test.c.o:
-	$(MAKE) -f CMakeFiles/cJson_test.dir/build.make CMakeFiles/cJson_test.dir/test.c.o
-.PHONY : test.c.o
-
-test.i: test.c.i
-
-.PHONY : test.i
-
-# target to preprocess a source file
-test.c.i:
-	$(MAKE) -f CMakeFiles/cJson_test.dir/build.make CMakeFiles/cJson_test.dir/test.c.i
-.PHONY : test.c.i
-
-test.s: test.c.s
-
-.PHONY : test.s
-
-# target to generate assembly for a file
-test.c.s:
-	$(MAKE) -f CMakeFiles/cJson_test.dir/build.make CMakeFiles/cJson_test.dir/test.c.s
-.PHONY : test.c.s
+cjson_unittest/fast:
+	$(MAKE) -f tests/CMakeFiles/cjson_unittest.dir/build.make tests/CMakeFiles/cjson_unittest.dir/build
+.PHONY : cjson_unittest/fast
 
 # Help Target
 help:
@@ -196,16 +140,10 @@ help:
 	@echo "... all (the default if no target is provided)"
 	@echo "... clean"
 	@echo "... depend"
-	@echo "... edit_cache"
-	@echo "... cJson_test"
 	@echo "... rebuild_cache"
-	@echo "... cJson"
-	@echo "... cJson.o"
-	@echo "... cJson.i"
-	@echo "... cJson.s"
-	@echo "... test.o"
-	@echo "... test.i"
-	@echo "... test.s"
+	@echo "... edit_cache"
+	@echo "... test"
+	@echo "... cjson_unittest"
 .PHONY : help
 
 
